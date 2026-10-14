@@ -47,9 +47,9 @@ workflows:
                       <key>PayloadDisplayName</key>
                       <string>Web Clip</string>
                       <key>PayloadIdentifier</key>
-                      <string>com.apple.webclip.managed.$PAYLOAD_UUID</string>
+                      <string>com.apple.webClip.managed.$PAYLOAD_UUID</string>
                       <key>PayloadType</key>
-                      <string>com.apple.webclip.managed</string>
+                      <string>com.apple.webClip.managed</string>
                       <key>PayloadUUID</key>
                       <string>$PAYLOAD_UUID</string>
                       <key>PayloadVersion</key>
