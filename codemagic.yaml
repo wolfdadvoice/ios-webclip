@@ -17,7 +17,7 @@ workflows:
           # 由云端直接将标准的 XML 代码写入纯净环境，彻底避开 Windows 的编码污染
           cat <<EOF > $CM_BUILD_DIR/bookmark.mobileconfig
           <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://apple.com">
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
               <key>PayloadContent</key>
