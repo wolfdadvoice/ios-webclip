@@ -1,0 +1,73 @@
+workflows:
+  build-ios-bookmark:
+    name: Cloud WebClip Packager
+    max_build_duration: 5
+    instance_type: mac_mini_m1
+    environment:
+      vars:
+        BOOKMARK_TITLE: "点击修改你的书签名字"    # 👈 在这里修改你的书签显示名称
+        BOOKMARK_URL: "https://baidu.com" # 👈 在这里修改你要打包的网页链接
+    scripts:
+      - name: 1. 云端 Mac 高精度绘制描述文件
+        script: |
+          # 借用云端Mac的 uuidgen 指令生成高精度不冲突的 UUID 码
+          PAYLOAD_UUID=$(uuidgen)
+          PROFILE_UUID=$(uuidgen)
+          
+          # 由云端直接将标准的 XML 代码写入纯净环境，彻底避开 Windows 的编码污染
+          cat <<EOF > $CM_BUILD_DIR/bookmark.mobileconfig
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://apple.com">
+          <plist version="1.0">
+          <dict>
+              <key>PayloadContent</key>
+              <array>
+                  <dict>
+                      <key>FullScreen</key>
+                      <true/>
+                      <key>Icon</key>
+                      <data>
+                      iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABwKC9fAAAAUVBMVEUAAED///////////8/
+                      Pz8/Pz9AQEBAQEBPz89fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+                      X19fX19fX19fX19fX19fX19fX19fX1+mZ0gBAAAAGnRSTlMAgIGAgICAgICAgICAgICAgICA
+                      gICAgICAwMDA89K3OQAAAExJREFUaN7t0bENADAMwLD3369bN6gskgX0gVMAAAAAAMAHVbvd
+                      bU8AAAAAAIDfVO12tz0BAAAAAMDvqnS7CwAAAAAAwAdV6XYXAAAAAE70AhUvA0pST98AAAAA
+                      SUVORK5CYII=
+                      </data>
+                      <key>IsRemovable</key>
+                      <true/>
+                      <key>Label</key>
+                      <string>$BOOKMARK_TITLE</string>
+                      <key>Precomposed</key>
+                      <true/>
+                      <key>URL</key>
+                      <string>$BOOKMARK_URL</string>
+                      <key>PayloadDescription</key>
+                      <string>WebClip 配置</string>
+                      <key>PayloadDisplayName</key>
+                      <string>Web Clip</string>
+                      <key>PayloadIdentifier</key>
+                      <string>com.apple.webclip.managed.$PAYLOAD_UUID</string>
+                      <key>PayloadType</key>
+                      <string>com.apple.webclip.managed</string>
+                      <key>PayloadUUID</key>
+                      <string>$PAYLOAD_UUID</string>
+                      <key>PayloadVersion</key>
+                      <integer>1</integer>
+                  </dict>
+              </array>
+              <key>PayloadDisplayName</key>
+              <string>$BOOKMARK_TITLE</string>
+              <key>PayloadIdentifier</key>
+              <string>com.bookmark.profile.$PROFILE_UUID</string>
+              <key>PayloadType</key>
+              <string>Configuration</string>
+              <key>PayloadUUID</key>
+              <string>$PROFILE_UUID</string>
+              <key>PayloadVersion</key>
+              <integer>1</integer>
+          </dict>
+          </plist>
+          EOF
+    artifacts:
+      - $CM_BUILD_DIR/*.mobileconfig # 告诉 Codemagic 最终输出此书签文件
